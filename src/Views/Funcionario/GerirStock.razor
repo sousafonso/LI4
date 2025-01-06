@@ -1,0 +1,50 @@
+@page "/funcionario/gerir-stock"
+@inject HttpClient Http
+
+<h3>Gerir Stock</h3>
+
+@if (materiais != null)
+{
+    <EditForm OnValidSubmit="@AtualizarStock">
+        @foreach (var material in materiais)
+        {
+            <div>
+                <h5>@material.Nome</h5>
+                <p>Quantidade Atual: @material.QuantidadeEmStock</p>
+                <label>Nova Quantidade: </label>
+                <InputNumber @bind-Value="novaQuantidade[material.Id]" />
+            </div>
+        }
+        <button type="submit">Atualizar Estoque</button>
+    </EditForm>
+}
+else
+{
+    <p>A carregar os materiais...</p>
+}
+
+@code {
+    List<Material> materiais;
+    Dictionary<int, int> novaQuantidade = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        materiais = await Http.GetFromJsonAsync<List<Material>>("api/Funcionario/GerirStock");
+        foreach (var material in materiais)
+        {
+            novaQuantidade[material.Id] = material.QuantidadeEmStock;
+        }
+    }
+
+    private async Task AtualizarStock()
+    {
+        foreach (var materialId in novaQuantidade.Keys)
+        {
+            var response = await Http.PostAsJsonAsync($"api/Funcionario/AtualizarStock?materialId={materialId}&novaQuantidade={novaQuantidade[materialId]}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Stock do material {materialId} atualizado.");
+            }
+        }
+    }
+}

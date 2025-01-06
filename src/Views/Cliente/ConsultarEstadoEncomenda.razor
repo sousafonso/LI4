@@ -1,0 +1,28 @@
+@page "/cliente/estado-encomenda"
+@inject HttpClient Http
+
+<h3>Consultar Estado da Encomenda</h3>
+
+@if (encomendas != null)
+{
+    foreach (var encomenda in encomendas)
+    {
+        <div>
+            <h4>Encomenda #@encomenda.Id</h4>
+            <p>Estado Atual: @encomenda.Estado</p>
+        </div>
+    }
+}
+else
+{
+    <p>A carregar os estados das encomendas...</p>
+}
+
+@code {
+    List<Encomenda> encomendas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Cliente/ConsultarEstado");
+    }
+}

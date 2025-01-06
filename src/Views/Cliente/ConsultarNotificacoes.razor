@@ -1,0 +1,28 @@
+@page "/cliente/notificacoes"
+@inject HttpClient Http
+
+<h3>Notificações</h3>
+
+@if (notificacoes != null)
+{
+    foreach (var notificacao in notificacoes)
+    {
+        <div>
+            <p>@notificacao.Mensagem</p>
+            <small>@notificacao.DataHora.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+    }
+}
+else
+{
+    <p>A carregar notificações...</p>
+}
+
+@code {
+    List<Notificacao> notificacoes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        notificacoes = await Http.GetFromJsonAsync<List<Notificacao>>("api/Cliente/ConsultarNotificacoes?clienteId=1");
+    }
+}

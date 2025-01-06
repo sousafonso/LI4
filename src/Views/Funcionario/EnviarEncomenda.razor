@@ -1,0 +1,43 @@
+@page "/funcionario/enviar-encomenda"
+@inject HttpClient Http
+
+<h3>Enviar Encomenda</h3>
+
+@if (encomendas != null)
+{
+    foreach (var encomenda in encomendas)
+    {
+        <div>
+            <h4>Encomenda #@encomenda.Id</h4>
+            <p>Cliente: @encomenda.Cliente.Nome</p>
+            <p>Estado: @encomenda.Estado</p>
+            <button @onclick="() => EnviarEncomenda(encomenda.Id)">Enviar</button>
+        </div>
+    }
+}
+else
+{
+    <p>A carregar encomendas...</p>
+}
+
+@code {
+    List<Encomenda> encomendas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Funcionario/ConsultarEncomendas");
+    }
+
+    private async Task EnviarEncomenda(int encomendaId)
+    {
+        var response = await Http.PostAsJsonAsync($"api/Funcionario/EnviarEncomenda?encomendaId={encomendaId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Encomenda {encomendaId} enviada com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine($"Erro ao enviar encomenda {encomendaId}.");
+        }
+    }
+}

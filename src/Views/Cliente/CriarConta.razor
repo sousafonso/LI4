@@ -1,0 +1,52 @@
+@page "/cliente/registrar"
+@inject HttpClient Http
+
+<h3>Criar Conta</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Criar Conta">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Nome:</label>
+        <InputText @bind-Value="cliente.Nome" />
+    </div>
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="cliente.Username" />
+    </div>
+    <div>
+        <label>Senha:</label>
+        <InputText @bind-Value="cliente.Senha" type="password" />
+    </div>
+    <div>
+        <label>Contacto:</label>
+        <InputText @bind-Value="cliente.Contacto" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="cliente.Email" />
+    </div>
+    <div>
+        <label>NIF:</label>
+        <InputText @bind-Value="cliente.NIF" />
+    </div>
+    <button type="submit">Registrar</button>
+</EditForm>
+
+@code {
+    private Cliente cliente = new Cliente();
+
+    private async Task RegistrarCliente()
+    {
+        var response = await Http.PostAsJsonAsync("api/Cliente/Registar", cliente);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+}

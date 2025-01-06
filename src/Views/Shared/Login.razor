@@ -1,0 +1,42 @@
+@page "/cliente/login"
+@inject HttpClient Http
+
+<h3>Login Cliente</h3>
+
+<EditForm Model="loginModel" OnValidSubmit="LoginCliente">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="loginModel.Username" />
+    </div>
+    <div>
+        <label>Senha:</label>
+        <InputText @bind-Value="loginModel.Senha" type="password" />
+    </div>
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task LoginCliente()
+    {
+        var response = await Http.PostAsJsonAsync("api/Cliente/Login", loginModel);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+
+    private class LoginModel
+    {
+        public string Username { get; set; }
+        public string Senha { get; set; }
+    }
+}
