@@ -1,0 +1,14 @@
+@model ProjetoLinhaMontagem.Models.Encomenda
+
+<h2>Efetuar Pagamento</h2>
+
+<p>Encomenda: @Model.Descricao</p>
+<p>Cliente: @Model.Cliente.Nome</p>
+<p>Valor Total: @Model.Valor:C</p>
+
+<form asp-action="ConfirmarPagamento" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div>
+        <input type="submit" value="Confirmar Pagamento" />
+    </div>
+</form>

@@ -1,0 +1,13 @@
+@model ProjetoLinhaMontagem.Models.LinhaMontagem
+
+<h2>Consultar Linha de Montagem</h2>
+
+<p>Linha de Montagem: @Model.Nome</p>
+
+<h3>Funcionários</h3>
+<ul>
+    @foreach (var funcionario in Model.Funcionarios)
+    {
+        <li>@funcionario.Nome</li>
+    }
+</ul>

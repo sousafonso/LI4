@@ -1,0 +1,23 @@
+@model IEnumerable<ProjetoLinhaMontagem.Models.Material>
+
+<h2>Gestão de Stock</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var material in Model)
+        {
+            <tr>
+                <td>@material.Nome</td>
+                <td>@material.Quantidade</td>
+                <td><a asp-action="Repor" asp-route-id="@material.Id">Repor</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

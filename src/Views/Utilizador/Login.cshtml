@@ -1,0 +1,20 @@
+<h2>Login</h2>
+
+<form asp-action="Login" method="post">
+    <div>
+        <label for="Username">Username</label>
+        <input type="text" name="username" id="Username" required />
+    </div>
+    <div>
+        <label for="Senha">Senha</label>
+        <input type="password" name="senha" id="Senha" required />
+    </div>
+    <div>
+        <input type="submit" value="Entrar" />
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <p style="color: red;">@ViewBag.ErrorMessage</p>
+}

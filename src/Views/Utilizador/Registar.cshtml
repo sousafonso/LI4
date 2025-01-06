@@ -1,0 +1,33 @@
+@model ProjetoLinhaMontagem.Models.Utilizador
+
+<h2>Registar</h2>
+
+<form asp-action="Registar" method="post">
+    <div>
+        <label for="Nome">Nome</label>
+        <input type="text" asp-for="Nome" />
+    </div>
+    <div>
+        <label for="Email">Email</label>
+        <input type="email" asp-for="Email" />
+    </div>
+    <div>
+        <label for="Username">Username</label>
+        <input type="text" asp-for="Username" />
+    </div>
+    <div>
+        <label for="Senha">Senha</label>
+        <input type="password" asp-for="Senha" />
+    </div>
+    <div>
+        <label for="ContactoTel">Contacto</label>
+        <input type="text" asp-for="ContactoTel" />
+    </div>
+    <div>
+        <label for="NIF">NIF</label>
+        <input type="text" asp-for="NIF" />
+    </div>
+    <div>
+        <input type="submit" value="Registar" />
+    </div>
+</form>
