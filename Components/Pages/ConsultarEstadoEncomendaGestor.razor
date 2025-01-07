@@ -1,7 +1,7 @@
-@page "/funcionario/iniciar-producao"
+@page "/funcionario/consultar-encomenda"
 @inject HttpClient Http
 
-<h3>Iniciar Produção</h3>
+<h3>Consultar Encomenda</h3>
 
 @if (encomendas != null)
 {
@@ -11,7 +11,9 @@
             <li>
                 <p>Encomenda: @encomenda.Descricao</p>
                 <p>Cliente: @encomenda.Cliente.Nome</p>
+                <p>Estado: @encomenda.Estado</p>
                 <button @onclick="() => IniciarProducao(encomenda.Id)">Iniciar Produção</button>
+                <button @onclick="() => EnviarEncomenda(encomenda.Id)">Enviar Encomenda</button>
             </li>
         }
     </ul>
@@ -39,6 +41,19 @@ else
         else
         {
             Console.WriteLine("Erro ao iniciar produção.");
+        }
+    }
+
+    private async Task EnviarEncomenda(int encomendaId)
+    {
+        var response = await Http.PostAsJsonAsync($"api/Funcionario/EnviarEncomenda?encomendaId={encomendaId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Encomenda enviada com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("Erro ao enviar encomenda.");
         }
     }
 }

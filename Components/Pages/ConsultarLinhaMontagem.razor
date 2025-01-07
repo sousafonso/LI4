@@ -1,0 +1,25 @@
+@page "/funcionario/consultar-linha-montagem"
+@inject HttpClient Http
+
+<h3>Consultar Linha de Montagem</h3>
+
+@if (linhaMontagem != null)
+{
+    <p>Linha de Montagem: @linhaMontagem.Produto</p>
+    <p>Estado: @linhaMontagem.Estado</p>
+    <p>Etapa Atual: @linhaMontagem.EtapaAtual</p>
+    <p>Tempo Restante: @linhaMontagem.TempoRestante</p>
+}
+else
+{
+    <p>A carregar linha de montagem...</p>
+}
+
+@code {
+    private LinhaMontagem linhaMontagem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        linhaMontagem = await Http.GetFromJsonAsync<LinhaMontagem>("api/LinhaMontagem/ConsultarLinha?produtoId=1");
+    }
+}

@@ -1,0 +1,30 @@
+@page "/cliente/consultar-notificacoes"
+@inject HttpClient Http
+
+<h3>Consultar Notificações</h3>
+
+@if (notificacoes != null)
+{
+    <ul>
+        @foreach (var notificacao in notificacoes)
+        {
+            <li>
+                <p>Data: @notificacao.Data</p>
+                <p>Mensagem: @notificacao.Mensagem</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>A carregar notificações...</p>
+}
+
+@code {
+    private List<Notificacao> notificacoes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        notificacoes = await Http.GetFromJsonAsync<List<Notificacao>>("api/Notificacao/Consultar?clienteId=1");
+    }
+}

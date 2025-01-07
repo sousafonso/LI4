@@ -1,0 +1,44 @@
+@page "/funcionario/consultar-stock"
+@inject HttpClient Http
+
+<h3>Consultar Stock</h3>
+
+@if (materiais != null)
+{
+    <ul>
+        @foreach (var material in materiais)
+        {
+            <li>
+                <p>Material: @material.Nome</p>
+                <p>Quantidade: @material.Quantidade</p>
+                <button @onclick="() => ReporStock(material.Id)">Repor Stock</button>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>A carregar materiais...</p>
+}
+
+@code {
+    private List<Material> materiais;
+
+    protected override async Task OnInitializedAsync()
+    {
+        materiais = await Http.GetFromJsonAsync<List<Material>>("api/Material");
+    }
+
+    private async Task ReporStock(int materialId)
+    {
+        var response = await Http.PostAsJsonAsync($"api/Material/Repor?materialId={materialId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Stock reposto com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("Erro ao repor stock.");
+        }
+    }
+}

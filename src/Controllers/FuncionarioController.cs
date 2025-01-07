@@ -1,6 +1,8 @@
 using LinhaMontagem.Data;
 using LinhaMontagem.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace LinhaMontagem.Controllers
 {
@@ -47,9 +49,7 @@ namespace LinhaMontagem.Controllers
             _context.SaveChanges();
             return Ok("Notificação enviada com sucesso.");
         }
-    }
 
-    [Authorize(Policy = "Funcionario")]
         [HttpPost("EnviarEncomenda")]
         public IActionResult EnviarEncomenda(int encomendaId)
         {
@@ -71,5 +71,5 @@ namespace LinhaMontagem.Controllers
 
             return Ok("Encomenda enviada e cliente notificado.");
         }
-
     }
+}

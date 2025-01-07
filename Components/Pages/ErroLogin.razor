@@ -1,9 +1,9 @@
-@page "/login"
+@page "/cliente/login"
 @inject HttpClient Http
 
-<h3>Login</h3>
+<h3>Login Cliente</h3>
 
-<EditForm Model="loginModel" OnValidSubmit="Login">
+<EditForm Model="loginModel" OnValidSubmit="LoginCliente">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -27,7 +27,7 @@
     private LoginModel loginModel = new LoginModel();
     private string errorMessage;
 
-    private async Task Login()
+    private async Task LoginCliente()
     {
         var response = await Http.PostAsJsonAsync("api/Cliente/Login", loginModel);
         if (response.IsSuccessStatusCode)

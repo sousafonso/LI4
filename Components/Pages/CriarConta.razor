@@ -1,0 +1,59 @@
+@page "/cliente/registrar"
+@inject HttpClient Http
+
+<h3>Registrar Cliente</h3>
+
+<EditForm Model="cliente" OnValidSubmit="RegistrarCliente">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Nome:</label>
+        <InputText @bind-Value="cliente.Nome" />
+    </div>
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="cliente.Username" />
+    </div>
+    <div>
+        <label>Senha:</label>
+        <InputText @bind-Value="cliente.Senha" type="password" />
+    </div>
+    <div>
+        <label>Contacto:</label>
+        <InputText @bind-Value="cliente.Contacto" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="cliente.Email" />
+    </div>
+    <div>
+        <label>NIF:</label>
+        <InputText @bind-Value="cliente.NIF" />
+    </div>
+    <button type="submit">Registrar</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
+
+@code {
+    private Cliente cliente = new Cliente();
+    private string errorMessage;
+
+    private async Task RegistrarCliente()
+    {
+        var response = await Http.PostAsJsonAsync("api/Cliente/Registrar", cliente);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+            NavigationManager.NavigateTo("/cliente/login");
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
+        }
+    }
+}

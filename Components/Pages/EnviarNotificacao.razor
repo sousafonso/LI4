@@ -1,0 +1,36 @@
+@page "/funcionario/enviar-notificacao"
+@inject HttpClient Http
+
+<h3>Enviar Notificação</h3>
+
+<EditForm Model="notificacao" OnValidSubmit="EnviarNotificacao">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Cliente ID:</label>
+        <InputNumber @bind-Value="notificacao.ClienteId" />
+    </div>
+    <div>
+        <label>Mensagem:</label>
+        <InputTextArea @bind-Value="notificacao.Mensagem" />
+    </div>
+    <button type="submit">Enviar</button>
+</EditForm>
+
+@code {
+    private Notificacao notificacao = new Notificacao();
+
+    private async Task EnviarNotificacao()
+    {
+        var response = await Http.PostAsJsonAsync("api/Notificacao/Enviar", notificacao);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+}

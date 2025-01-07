@@ -1,9 +1,9 @@
-@page "/cliente/registrar"
+@page "/cliente/registar"
 @inject HttpClient Http
 
 <h3>Criar Conta</h3>
 
-<EditForm Model="cliente" OnValidSubmit="Criar Conta">
+<EditForm Model="cliente" OnValidSubmit="RegistarCliente">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -37,7 +37,7 @@
 @code {
     private Cliente cliente = new Cliente();
 
-    private async Task RegistrarCliente()
+    private async Task RegistarCliente()
     {
         var response = await Http.PostAsJsonAsync("api/Cliente/Registar", cliente);
         if (response.IsSuccessStatusCode)

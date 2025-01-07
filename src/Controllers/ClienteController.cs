@@ -1,43 +1,82 @@
-[ApiController]
-[Route("api/[controller]")]
-public class ClienteController : ControllerBase
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using LinhaMontagem.Data;
+using LinhaMontagem.Models;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace LinhaMontagem.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public ClienteController(ApplicationDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ClienteController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    [HttpPost("Registar")]
-    public async Task<IActionResult> Registrar(Cliente cliente)
-    {
-        if (!cliente.Username.StartsWith("cl"))
+        public ClienteController(ApplicationDbContext context)
         {
-            return BadRequest("O username deve começar com 'cl'.");
+            _context = context;
         }
 
-        if (_context.Clientes.Any(c => c.Username == cliente.Username))
+        [HttpPost("Registar")]
+        public async Task<IActionResult> Registrar(Cliente cliente)
         {
-            return BadRequest("O username já está em uso.");
+            if (_context.Clientes.Any(c => c.Email == cliente.Email))
+            {
+                return BadRequest("Já existe uma conta associada ao email apresentado.");
+            }
+
+            if (_context.Clientes.Any(c => c.Username == cliente.Username))
+            {
+                return BadRequest("O username inserido já está a ser utilizado.");
+            }
+
+            if (!cliente.Username.EndsWith("cl"))
+            {
+                return BadRequest("O username deve terminar com 'cl'.");
+            }
+
+            _context.Clientes.Add(cliente);
+            await _context.SaveChangesAsync();
+            return Ok(cliente);
         }
 
-        _context.Clientes.Add(cliente);
-        await _context.SaveChangesAsync();
-        return Ok("Conta criada com sucesso.");
-    }
-
-    [HttpPost("Login")]
-    public async Task<IActionResult> Login(string username, string senha)
-    {
-        var cliente = await _context.Clientes
-            .FirstOrDefaultAsync(c => c.Username == username && c.Senha == senha);
-
-        if (cliente == null)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginModel loginModel)
         {
-            return Unauthorized("Credenciais inválidas.");
+            var cliente = await _context.Clientes
+                .FirstOrDefaultAsync(c => c.Username == loginModel.Username && c.Senha == loginModel.Senha);
+
+            if (cliente == null)
+            {
+                return Unauthorized("Credenciais inválidas.");
+            }
+
+            // Simulação de autenticação
+            return Ok("Login bem-sucedido.");
         }
 
-        return Ok(cliente);
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            // Simulação de logout
+            return Ok("Logout bem-sucedido.");
+        }
+
+        [HttpGet("ConsultarNotificacoes")]
+        public async Task<IActionResult> ConsultarNotificacoes(int clienteId)
+        {
+            var notificacoes = await _context.Notificacoes
+                .Where(n => n.ClienteId == clienteId)
+                .ToListAsync();
+
+            return Ok(notificacoes);
+        }
+
+        public class LoginModel
+        {
+            public string Username { get; set; }
+            public string Senha { get; set; }
+        }
     }
 }

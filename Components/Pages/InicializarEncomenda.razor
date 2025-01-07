@@ -1,0 +1,50 @@
+@page "/cliente/encomendar"
+@inject HttpClient Http
+
+<h3>Iniciar Encomenda</h3>
+
+<EditForm Model="encomenda" OnValidSubmit="IniciarEncomenda">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Descrição:</label>
+        <InputText @bind-Value="encomenda.Descricao" />
+    </div>
+    <div>
+        <label>Produtos:</label>
+        @foreach (var produto in produtos)
+        {
+            <div>
+                <label>@produto.Nome</label>
+                <InputNumber @bind-Value="produto.Quantidade" />
+            </div>
+        }
+    </div>
+    <button type="submit">Iniciar Encomenda</button>
+</EditForm>
+
+@code {
+    private Encomenda encomenda = new Encomenda();
+    private List<Produto> produtos = new List<Produto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await Http.GetFromJsonAsync<List<Produto>>("api/Produto");
+    }
+
+    private async Task IniciarEncomenda()
+    {
+        encomenda.Produtos = produtos.Where(p => p.Quantidade > 0).ToList();
+        var response = await Http.PostAsJsonAsync("api/Encomenda/Criar", encomenda);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+            NavigationManager.NavigateTo("/cliente/historico");
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+}

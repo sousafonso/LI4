@@ -1,7 +1,13 @@
-public class Produto
+using System.Collections.Generic;
+
+namespace LinhaMontagem.Models
 {
-    public int Id { get; set; }
-    public string Nome { get; set; }
-    public double Preco { get; set; }
-    public int Stock { get; set; }
+    public class Produto
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public decimal Preco { get; set; }
+        public int Quantidade { get; set; }
+        public List<Material> materiais { get; set; }
+    }
 }

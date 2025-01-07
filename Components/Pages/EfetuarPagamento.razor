@@ -1,0 +1,39 @@
+@page "/cliente/efetuar-pagamento"
+@inject HttpClient Http
+
+<h3>Efetuar Pagamento</h3>
+
+@if (encomenda != null)
+{
+    <p>Encomenda: @encomenda.Descricao</p>
+    <p>Cliente: @encomenda.Cliente.Nome</p>
+    <p>Valor Total: @encomenda.Valor:C</p>
+
+    <button @onclick="ConfirmarPagamento">Confirmar Pagamento</button>
+}
+else
+{
+    <p>A carregar encomenda...</p>
+}
+
+@code {
+    private Encomenda encomenda;
+
+    protected override async Task OnInitializedAsync()
+    {
+        encomenda = await Http.GetFromJsonAsync<Encomenda>("api/Encomenda/EfetuarPagamento?encomendaId=1");
+    }
+
+    private async Task ConfirmarPagamento()
+    {
+        var response = await Http.PostAsJsonAsync("api/Encomenda/ConfirmarPagamento?encomendaId=1", null);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Pagamento confirmado com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("Erro ao confirmar pagamento.");
+        }
+    }
+}
