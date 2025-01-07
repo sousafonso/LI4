@@ -46,4 +46,57 @@
         public string Username { get; set; }
         public string Senha { get; set; }
     }
+}@page "/cliente/login"
+@inject HttpClient Http
+
+<h3>Login Cliente</h3>
+
+<EditForm Model="loginModel" OnValidSubmit="LoginCliente">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Username:</label>
+        <InputText @bind-Value="loginModel.Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Senha:</label>
+        <InputText @bind-Value="loginModel.Senha" type="password" class="form-control" />
+    </div>
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> @errorMessage
+        <p>Nota: Usernames de cliente devem incluir "cl".</p>
+    </div>
+}
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    private string errorMessage;
+
+    private async Task LoginCliente()
+    {
+        var response = await Http.PostAsJsonAsync("api/Cliente/Login", loginModel);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+            NavigationManager.NavigateTo("/cliente/menu");
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
+        }
+    }
+
+    private class LoginModel
+    {
+        public string Username { get; set; }
+        public string Senha { get; set; }
+    }
 }

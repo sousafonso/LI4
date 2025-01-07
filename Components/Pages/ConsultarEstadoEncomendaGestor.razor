@@ -1,26 +1,25 @@
 @page "/funcionario/consultar-encomenda"
 @inject HttpClient Http
 
-<h3>Consultar Encomenda</h3>
+<h3>Consultar Estado de Encomenda</h3>
 
-@if (encomendas != null)
+@if (encomendas != null && encomendas.Any())
 {
-    <ul>
+    <ul class="list-group">
         @foreach (var encomenda in encomendas)
         {
-            <li>
-                <p>Encomenda: @encomenda.Descricao</p>
-                <p>Cliente: @encomenda.Cliente.Nome</p>
-                <p>Estado: @encomenda.Estado</p>
-                <button @onclick="() => IniciarProducao(encomenda.Id)">Iniciar Produção</button>
-                <button @onclick="() => EnviarEncomenda(encomenda.Id)">Enviar Encomenda</button>
+            <li class="list-group-item">
+                <p><strong>Encomenda:</strong> @encomenda.Descricao</p>
+                <p><strong>Cliente:</strong> @encomenda.Cliente.Nome</p>
+                <p><strong>Estado:</strong> @encomenda.Estado</p>
+                <button class="btn btn-primary" @onclick="() => IniciarProducao(encomenda.Id)">Iniciar Produção</button>
             </li>
         }
     </ul>
 }
 else
 {
-    <p>A carregar encomendas...</p>
+    <p>Não há encomendas ou ainda estão a ser carregadas.</p>
 }
 
 @code {
@@ -28,7 +27,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Encomenda/ConsultarHistorico?clienteId=1");
+        encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Funcionario/ConsultarEncomendas");
     }
 
     private async Task IniciarProducao(int encomendaId)
@@ -36,24 +35,11 @@ else
         var response = await Http.PostAsJsonAsync($"api/LinhaMontagem/IniciarProducao?encomendaId={encomendaId}", null);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Produção iniciada com sucesso!");
+            Console.WriteLine("Produção iniciada com sucesso.");
         }
         else
         {
             Console.WriteLine("Erro ao iniciar produção.");
-        }
-    }
-
-    private async Task EnviarEncomenda(int encomendaId)
-    {
-        var response = await Http.PostAsJsonAsync($"api/Funcionario/EnviarEncomenda?encomendaId={encomendaId}", null);
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine("Encomenda enviada com sucesso!");
-        }
-        else
-        {
-            Console.WriteLine("Erro ao enviar encomenda.");
         }
     }
 }

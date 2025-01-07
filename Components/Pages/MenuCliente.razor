@@ -1,8 +1,21 @@
 @page "/cliente/menu"
+@inject NavigationManager NavigationManager
 
-<h3>Menu Cliente</h3>
+<h3>Menu do Cliente</h3>
 
-<ul>
-    <li><a href="/cliente/encomendar">Encomendar</a></li>
-    <li><a href="/cliente/historico">Histórico</a></li>
-</ul>
+<div class="menu-container">
+    <button class="btn btn-primary" @onclick="IrParaEncomendar">Encomendar</button>
+    <button class="btn btn-primary" @onclick="IrParaHistorico">Histórico</button>
+</div>
+
+@code {
+    private void IrParaEncomendar()
+    {
+        NavigationManager.NavigateTo("/cliente/encomendar");
+    }
+
+    private void IrParaHistorico()
+    {
+        NavigationManager.NavigateTo("/cliente/historico");
+    }
+}

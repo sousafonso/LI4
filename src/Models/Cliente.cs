@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LinhaMontagem.Models
+namespace LI4.src.Models
 {
     public class Cliente
     {
@@ -11,6 +11,7 @@ namespace LinhaMontagem.Models
         public string Contacto { get; set; }
         public string Email { get; set; }
         public string NIF { get; set; }
-        public List<Notificacao> Notificacoes { get; set; }
+        public List<Encomenda> Encomendas { get; set; } = new List<Encomenda>();
+        public List<Notificacao> Notificacoes { get; set; } = new List<Notificacao>();
     }
 }

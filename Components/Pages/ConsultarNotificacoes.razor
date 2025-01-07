@@ -3,21 +3,21 @@
 
 <h3>Consultar Notificações</h3>
 
-@if (notificacoes != null)
+@if (notificacoes != null && notificacoes.Any())
 {
-    <ul>
+    <ul class="list-group">
         @foreach (var notificacao in notificacoes)
         {
-            <li>
-                <p>Data: @notificacao.Data</p>
-                <p>Mensagem: @notificacao.Mensagem</p>
+            <li class="list-group-item">
+                <p><strong>Data:</strong> @notificacao.Data.ToString("dd/MM/yyyy HH:mm")</p>
+                <p><strong>Mensagem:</strong> @notificacao.Mensagem</p>
             </li>
         }
     </ul>
 }
 else
 {
-    <p>A carregar notificações...</p>
+    <p>Não existem notificações ou ainda estão a ser carregadas.</p>
 }
 
 @code {
@@ -25,6 +25,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        notificacoes = await Http.GetFromJsonAsync<List<Notificacao>>("api/Notificacao/Consultar?clienteId=1");
+        notificacoes = await Http.GetFromJsonAsync<List<Notificacao>>("api/Cliente/ConsultarNotificacoes");
     }
 }

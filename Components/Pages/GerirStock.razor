@@ -3,22 +3,22 @@
 
 <h3>Consultar Stock</h3>
 
-@if (materiais != null)
+@if (materiais != null && materiais.Any())
 {
-    <ul>
+    <ul class="list-group">
         @foreach (var material in materiais)
         {
-            <li>
-                <p>Material: @material.Nome</p>
-                <p>Quantidade: @material.Quantidade</p>
-                <button @onclick="() => ReporStock(material.Id)">Repor Stock</button>
+            <li class="list-group-item">
+                <p><strong>Material:</strong> @material.Nome</p>
+                <p><strong>Quantidade:</strong> @material.Quantidade</p>
+                <button class="btn btn-success" @onclick="() => ReporStock(material.Id)">Repor Stock</button>
             </li>
         }
     </ul>
 }
 else
 {
-    <p>A carregar materiais...</p>
+    <p>Não há materiais disponíveis ou ainda estão a ser carregados.</p>
 }
 
 @code {
@@ -26,19 +26,20 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        materiais = await Http.GetFromJsonAsync<List<Material>>("api/Material");
+        materiais = await Http.GetFromJsonAsync<List<Material>>("api/Funcionario/ConsultarStock");
     }
 
     private async Task ReporStock(int materialId)
     {
-        var response = await Http.PostAsJsonAsync($"api/Material/Repor?materialId={materialId}", null);
+        var response = await Http.PostAsJsonAsync($"api/Funcionario/ReporStock?materialId={materialId}", null);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Stock reposto com sucesso!");
+            Console.WriteLine("Stock atualizado com sucesso.");
+            materiais.FirstOrDefault(m => m.Id == materialId).Quantidade += 10; // Simulação de reposição
         }
         else
         {
-            Console.WriteLine("Erro ao repor stock.");
+            Console.WriteLine("Erro ao atualizar o stock.");
         }
     }
 }

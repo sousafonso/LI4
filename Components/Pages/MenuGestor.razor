@@ -1,9 +1,27 @@
 @page "/funcionario/menu"
+@inject NavigationManager NavigationManager
 
-<h3>Menu Funcionário</h3>
+<h3>Menu do Funcionário</h3>
 
-<ul>
-    <li><a href="/funcionario/encomendas">Encomendas</a></li>
-    <li><a href="/funcionario/linha-montagem">Linha de Montagem</a></li>
-    <li><a href="/funcionario/consultar-stock">Consultar Stock</a></li>
-</ul>
+<div class="menu-container">
+    <button class="btn btn-primary" @onclick="IrParaEncomendas">Encomendas</button>
+    <button class="btn btn-primary" @onclick="IrParaLinhaMontagem">Linha de Montagem</button>
+    <button class="btn btn-primary" @onclick="IrParaConsultarStock">Consultar Stock</button>
+</div>
+
+@code {
+    private void IrParaEncomendas()
+    {
+        NavigationManager.NavigateTo("/funcionario/consultar-encomenda");
+    }
+
+    private void IrParaLinhaMontagem()
+    {
+        NavigationManager.NavigateTo("/funcionario/consultar-linha-montagem");
+    }
+
+    private void IrParaConsultarStock()
+    {
+        NavigationManager.NavigateTo("/funcionario/consultar-stock");
+    }
+}

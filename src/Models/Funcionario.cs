@@ -1,4 +1,4 @@
-namespace LinhaMontagem.Models
+namespace LI4.src.Models
 {
     public class Funcionario
     {

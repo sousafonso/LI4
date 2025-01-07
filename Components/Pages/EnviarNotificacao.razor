@@ -1,5 +1,6 @@
 @page "/funcionario/enviar-notificacao"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h3>Enviar Notificação</h3>
 
@@ -7,30 +8,44 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div>
-        <label>Cliente ID:</label>
-        <InputNumber @bind-Value="notificacao.ClienteId" />
+    <div class="form-group">
+        <label>Cliente:</label>
+        <InputNumber @bind-Value="notificacao.ClienteId" class="form-control" />
     </div>
-    <div>
+    <div class="form-group">
         <label>Mensagem:</label>
-        <InputTextArea @bind-Value="notificacao.Mensagem" />
+        <InputTextArea @bind-Value="notificacao.Mensagem" class="form-control" />
     </div>
-    <button type="submit">Enviar</button>
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </div>
 </EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
 
 @code {
     private Notificacao notificacao = new Notificacao();
+    private string errorMessage;
 
     private async Task EnviarNotificacao()
     {
-        var response = await Http.PostAsJsonAsync("api/Notificacao/Enviar", notificacao);
+        var response = await Http.PostAsJsonAsync("api/Funcionario/EnviarNotificacao", notificacao);
         if (response.IsSuccessStatusCode)
         {
-            // Handle success
+            NavigationManager.NavigateTo("/funcionario/menu");
         }
         else
         {
-            // Handle error
+            errorMessage = "Erro ao enviar notificação.";
         }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/funcionario/menu");
     }
 }

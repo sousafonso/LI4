@@ -5,14 +5,17 @@
 
 @if (linhaMontagem != null)
 {
-    <p>Linha de Montagem: @linhaMontagem.Produto</p>
-    <p>Estado: @linhaMontagem.Estado</p>
-    <p>Etapa Atual: @linhaMontagem.EtapaAtual</p>
-    <p>Tempo Restante: @linhaMontagem.TempoRestante</p>
+    <p><strong>Produto:</strong> @linhaMontagem.Produto</p>
+    <p><strong>Estado:</strong> @linhaMontagem.Estado</p>
+    <p><strong>Etapa Atual:</strong> @linhaMontagem.EtapaAtual</p>
+    <p><strong>Tempo Restante:</strong> @linhaMontagem.TempoRestante minutos</p>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: @linhaMontagem.Progresso%;" aria-valuenow="@linhaMontagem.Progresso" aria-valuemin="0" aria-valuemax="100">@linhaMontagem.Progresso%</div>
+    </div>
 }
 else
 {
-    <p>A carregar linha de montagem...</p>
+    <p>A carregar informações da linha de montagem...</p>
 }
 
 @code {
@@ -20,6 +23,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        linhaMontagem = await Http.GetFromJsonAsync<LinhaMontagem>("api/LinhaMontagem/ConsultarLinha?produtoId=1");
+        linhaMontagem = await Http.GetFromJsonAsync<LinhaMontagem>("api/LinhaMontagem/Consultar");
     }
 }

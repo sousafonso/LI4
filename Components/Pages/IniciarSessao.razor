@@ -1,21 +1,21 @@
 @page "/login"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-<h3>Login</h3>
+<h3>Iniciar Sessão</h3>
 
-<EditForm Model="loginModel" OnValidSubmit="Login">
+<EditForm Model="loginModel" OnValidSubmit="IniciarSessao">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
-    <div>
-        <label>Username:</label>
-        <InputText @bind-Value="loginModel.Username" />
+    <div class="form-group">
+        <label>Username</label>
+        <InputText @bind-Value="loginModel.Username" class="form-control" />
     </div>
-    <div>
-        <label>Senha:</label>
-        <InputText @bind-Value="loginModel.Senha" type="password" />
+    <div class="form-group">
+        <label>Password</label>
+        <InputText @bind-Value="loginModel.Password" type="password" class="form-control" />
     </div>
-    <button type="submit">Login</button>
+    <button type="submit" class="btn btn-primary">Iniciar Sessão</button>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -27,23 +27,31 @@
     private LoginModel loginModel = new LoginModel();
     private string errorMessage;
 
-    private async Task Login()
+    private async Task IniciarSessao()
     {
-        var response = await Http.PostAsJsonAsync("api/Cliente/Login", loginModel);
+        var response = await Http.PostAsJsonAsync("api/Autenticacao/Login", loginModel);
         if (response.IsSuccessStatusCode)
         {
-            // Handle success
-            NavigationManager.NavigateTo("/cliente/menu");
+            // Sucesso
+            var role = await response.Content.ReadAsStringAsync(); // Retorna o tipo de utilizador
+            if (role == "Cliente")
+            {
+                NavigationManager.NavigateTo("/cliente/menu");
+            }
+            else if (role == "Funcionario")
+            {
+                NavigationManager.NavigateTo("/funcionario/menu");
+            }
         }
         else
         {
-            errorMessage = await response.Content.ReadAsStringAsync();
+            errorMessage = "Username e/ou password incorretos.";
         }
     }
 
-    private class LoginModel
+    public class LoginModel
     {
         public string Username { get; set; }
-        public string Senha { get; set; }
+        public string Password { get; set; }
     }
 }

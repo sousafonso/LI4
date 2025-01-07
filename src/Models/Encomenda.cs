@@ -1,25 +1,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace LinhaMontagem.Models
+namespace LI4.src.Models
 {
     public class Encomenda
     {
         public int Id { get; set; }
         public string Descricao { get; set; }
-        public DateTime Data { get; set; }
-        public decimal Valor { get; set; }
-        public string Estado { get; set; }
+        public DateTime DataRequerida { get; set; }
+        public DateTime DataEntregaPrevista { get; set; }
+        public DateTime? DataEntregaFinal { get; set; }
+        public decimal ValorTotal { get; set; }
+        public string Estado { get; set; } // Em espera, Em produção, Finalizada
         public int ClienteId { get; set; }
         public Cliente Cliente { get; set; }
-        public List<EncomendaProduto> Produtos { get; set; }
+        public List<EncomendaProduto> Produtos { get; set; } = new List<EncomendaProduto>();
 
         public void CalcularValorTotal()
         {
-            Valor = 0;
+            ValorTotal = 0;
             foreach (var produto in Produtos)
             {
-                Valor += produto.Produto.Preco * produto.Quantidade;
+                ValorTotal += produto.Produto.Preco * produto.Quantidade;
             }
         }
     }

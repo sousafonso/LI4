@@ -1,50 +1,67 @@
 @page "/cliente/encomendar"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-<h3>Iniciar Encomenda</h3>
+<h3>Encomendar Produtos</h3>
 
-<EditForm Model="encomenda" OnValidSubmit="IniciarEncomenda">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div>
-        <label>Descrição:</label>
-        <InputText @bind-Value="encomenda.Descricao" />
-    </div>
-    <div>
-        <label>Produtos:</label>
-        @foreach (var produto in produtos)
-        {
-            <div>
-                <label>@produto.Nome</label>
-                <InputNumber @bind-Value="produto.Quantidade" />
-            </div>
-        }
-    </div>
-    <button type="submit">Iniciar Encomenda</button>
-</EditForm>
+@if (produtos != null)
+{
+    <form>
+        <ul class="list-group">
+            @foreach (var produto in produtos)
+            {
+                <li class="list-group-item">
+                    <p>Produto: @produto.Nome</p>
+                    <p>Preço: @produto.Preco:C</p>
+                    <p>Disponível: @produto.QuantidadeDisponivel</p>
+                    <div>
+                        <label>Quantidade:</label>
+                        <InputNumber @bind-Value="produto.QuantidadeSelecionada" />
+                    </div>
+                </li>
+            }
+        </ul>
+        <button class="btn btn-primary" @onclick="EfetuarEncomenda">Confirmar Encomenda</button>
+    </form>
+}
+else
+{
+    <p>A carregar produtos...</p>
+}
 
 @code {
-    private Encomenda encomenda = new Encomenda();
-    private List<Produto> produtos = new List<Produto>();
+    private List<ProdutoViewModel> produtos;
 
     protected override async Task OnInitializedAsync()
     {
-        produtos = await Http.GetFromJsonAsync<List<Produto>>("api/Produto");
+        produtos = await Http.GetFromJsonAsync<List<ProdutoViewModel>>("api/Produto");
     }
 
-    private async Task IniciarEncomenda()
+    private async Task EfetuarEncomenda()
     {
-        encomenda.Produtos = produtos.Where(p => p.Quantidade > 0).ToList();
-        var response = await Http.PostAsJsonAsync("api/Encomenda/Criar", encomenda);
+        var encomenda = new EncomendaViewModel
+        {
+            Produtos = produtos.Where(p => p.QuantidadeSelecionada > 0).ToList()
+        };
+
+        var response = await Http.PostAsJsonAsync("api/Cliente/EfetuarEncomenda", encomenda);
         if (response.IsSuccessStatusCode)
         {
-            // Handle success
             NavigationManager.NavigateTo("/cliente/historico");
         }
-        else
-        {
-            // Handle error
-        }
+    }
+
+    public class ProdutoViewModel
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public decimal Preco { get; set; }
+        public int QuantidadeDisponivel { get; set; }
+        public int QuantidadeSelecionada { get; set; }
+    }
+
+    public class EncomendaViewModel
+    {
+        public List<ProdutoViewModel> Produtos { get; set; }
     }
 }

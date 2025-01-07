@@ -1,0 +1,45 @@
+@page "/cliente/historico"
+@inject HttpClient Http
+
+<h3>Histórico de Encomendas</h3>
+
+@if (encomendas != null)
+{
+    <ul class="list-group">
+        @foreach (var encomenda in encomendas)
+        {
+            <li class="list-group-item">
+                <p>Encomenda: @encomenda.Descricao</p>
+                <p>Estado: @encomenda.Estado</p>
+                <p>Data: @encomenda.DataRequerida.ToShortDateString()</p>
+                <p>Valor Total: @encomenda.ValorTotal:C</p>
+            </li>
+        }
+    </ul>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
+else
+{
+    <p>A carregar encomendas...</p>
+}
+
+@code {
+    private List<Encomenda> encomendas;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Cliente/Historico");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Erro ao carregar histórico.";
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

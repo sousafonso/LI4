@@ -1,30 +1,45 @@
-@page "/cliente/consultar-estado-encomenda"
+@page "/funcionario/enviar-notificacao"
 @inject HttpClient Http
 
-<h3>Consultar Estado da Encomenda</h3>
+<h3>Enviar Notificação</h3>
 
-@if (encomendas != null)
-{
-    <ul>
-        @foreach (var encomenda in encomendas)
-        {
-            <li>
-                <p>Encomenda: @encomenda.Descricao</p>
-                <p>Estado: @encomenda.Estado</p>
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <p>A carregar encomendas...</p>
-}
+<EditForm Model="notificacao" OnValidSubmit="EnviarNotificacao">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Cliente ID:</label>
+        <InputNumber @bind-Value="notificacao.ClienteId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Mensagem:</label>
+        <InputTextArea @bind-Value="notificacao.Mensagem" class="form-control" />
+    </div>
+    <div class="form-group text-center">
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+</EditForm>
 
 @code {
-    private List<Encomenda> encomendas;
+    private Notificacao notificacao = new Notificacao();
 
-    protected override async Task OnInitializedAsync()
+    private async Task EnviarNotificacao()
     {
-        encomendas = await Http.GetFromJsonAsync<List<Encomenda>>("api/Encomenda/ConsultarEstado?clienteId=1");
+        var response = await Http.PostAsJsonAsync("api/Funcionario/EnviarNotificacao", notificacao);
+        if (response.IsSuccessStatusCode)
+        {
+            // Handle success
+            NavigationManager.NavigateTo("/funcionario/menu");
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/funcionario/menu");
     }
 }
